@@ -1,0 +1,24 @@
+@{
+    ViewData["Title"] = "Wniosek o adopcję";
+    var animal = ViewBag.Animal as Shelter.Models.Animal;
+}
+
+<h1>Wniosek o adopcję</h1>
+
+@if (animal != null)
+{
+    <div class="alert alert-info">
+        <h4>@animal.Name</h4>
+        <p>Gatunek: @animal.Species | Rasa: @(animal.Breed ?? "Nieznana")</p>
+    </div>
+
+    <form method="post" asp-action="Apply">
+        <input type="hidden" name="animalId" value="@animal.Id">
+        <div class="mb-3">
+            <label for="notes" class="form-label">Uwagi (opcjonalnie)</label>
+            <textarea class="form-control" id="notes" name="notes" rows="5"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Złóż wniosek</button>
+        <a href="@Url.Action("Details", "Animals", new { id = animal.Id })" class="btn btn-secondary">Anuluj</a>
+    </form>
+}

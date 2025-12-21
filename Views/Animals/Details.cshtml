@@ -1,0 +1,75 @@
+@model Shelter.Models.Animal
+@{
+    ViewData["Title"] = "Szczegóły zwierzęcia";
+}
+
+<h1>@Model.Name</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        @if (!string.IsNullOrEmpty(Model.PhotoUrl))
+        {
+            <img src="@Model.PhotoUrl" class="img-fluid" alt="@Model.Name">
+        }
+        else
+        {
+            <div class="bg-secondary d-flex align-items-center justify-content-center" style="height: 400px;">
+                <span class="text-white">Brak zdjęcia</span>
+            </div>
+        }
+    </div>
+    <div class="col-md-6">
+        <h3>Informacje</h3>
+        <p><strong>Gatunek:</strong> @Model.Species</p>
+        <p><strong>Rasa:</strong> @(Model.Breed ?? "Nieznana")</p>
+        <p><strong>Wiek:</strong> @Model.Age lat</p>
+        <p><strong>Płeć:</strong> @Model.Gender</p>
+        <p><strong>Status:</strong> @Model.Status</p>
+        <p><strong>Data przyjęcia:</strong> @Model.AdmissionDate.ToString("dd.MM.yyyy")</p>
+        
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <h4>Opis</h4>
+            <p>@Model.Description</p>
+        }
+
+        @if (Model.Status == "Available" && Context.Session.GetInt32("UserId") != null)
+        {
+            <a href="@Url.Action("Apply", "Adoption", new { animalId = Model.Id })" class="btn btn-success mt-3">Złóż wniosek o adopcję</a>
+        }
+        else if (Model.Status == "Available")
+        {
+            <p class="text-muted mt-3">Aby złożyć wniosek o adopcję, musisz się zalogować.</p>
+        }
+    </div>
+</div>
+
+@if (Model.VeterinaryVisits != null && Model.VeterinaryVisits.Any())
+{
+    <div class="mt-4">
+        <h3>Historia wizyt weterynaryjnych</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Opis</th>
+                    <th>Diagnoza</th>
+                    <th>Koszt</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var visit in Model.VeterinaryVisits.OrderByDescending(v => v.VisitDate))
+                {
+                    <tr>
+                        <td>@visit.VisitDate.ToString("dd.MM.yyyy")</td>
+                        <td>@(visit.Description ?? "-")</td>
+                        <td>@(visit.Diagnosis ?? "-")</td>
+                        <td>@(visit.Cost?.ToString("C") ?? "-")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<a href="@Url.Action("Index", "Animals")" class="btn btn-secondary mt-3">Powrót do listy</a>

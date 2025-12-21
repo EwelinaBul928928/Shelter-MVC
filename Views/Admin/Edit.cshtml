@@ -1,0 +1,103 @@
+@model Shelter.Models.Animal
+@{
+    ViewData["Title"] = "Edytuj zwierzę";
+}
+
+<h1>Edytuj zwierzę</h1>
+
+<form method="post" asp-action="Edit">
+    <input type="hidden" name="id" value="@Model.Id">
+    <div class="mb-3">
+        <label for="name" class="form-label">Imię</label>
+        <input type="text" class="form-control" id="name" name="name" value="@Model.Name" required>
+    </div>
+    <div class="mb-3">
+        <label for="species" class="form-label">Gatunek</label>
+        <select class="form-select" id="species" name="species" required>
+            @if (Model.Species == "Pies")
+            {
+                <option value="Pies" selected>Pies</option>
+            }
+            else
+            {
+                <option value="Pies">Pies</option>
+            }
+            @if (Model.Species == "Kot")
+            {
+                <option value="Kot" selected>Kot</option>
+            }
+            else
+            {
+                <option value="Kot">Kot</option>
+            }
+            @if (Model.Species == "Inne")
+            {
+                <option value="Inne" selected>Inne</option>
+            }
+            else
+            {
+                <option value="Inne">Inne</option>
+            }
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="breed" class="form-label">Rasa</label>
+        <input type="text" class="form-control" id="breed" name="breed" value="@Model.Breed">
+    </div>
+    <div class="mb-3">
+        <label for="age" class="form-label">Wiek</label>
+        <input type="number" class="form-control" id="age" name="age" value="@Model.Age" required>
+    </div>
+    <div class="mb-3">
+        <label for="gender" class="form-label">Płeć</label>
+        <select class="form-select" id="gender" name="gender" required>
+            @if (Model.Gender == "Samiec")
+            {
+                <option value="Samiec" selected>Samiec</option>
+            }
+            else
+            {
+                <option value="Samiec">Samiec</option>
+            }
+            @if (Model.Gender == "Samica")
+            {
+                <option value="Samica" selected>Samica</option>
+            }
+            else
+            {
+                <option value="Samica">Samica</option>
+            }
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Opis</label>
+        <textarea class="form-control" id="description" name="description" rows="5">@Model.Description</textarea>
+    </div>
+    <div class="mb-3">
+        <label for="photoUrl" class="form-label">URL zdjęcia</label>
+        <input type="text" class="form-control" id="photoUrl" name="photoUrl" value="@Model.PhotoUrl">
+    </div>
+    <div class="mb-3">
+        <label for="status" class="form-label">Status</label>
+        <select class="form-select" id="status" name="status" required>
+            @if (Model.Status == "Available")
+            {
+                <option value="Available" selected>Dostępne</option>
+            }
+            else
+            {
+                <option value="Available">Dostępne</option>
+            }
+            @if (Model.Status == "Adopted")
+            {
+                <option value="Adopted" selected>Zaadoptowane</option>
+            }
+            else
+            {
+                <option value="Adopted">Zaadoptowane</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+    <a href="@Url.Action("Animals", "Admin")" class="btn btn-secondary">Anuluj</a>
+</form>

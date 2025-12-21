@@ -1,0 +1,45 @@
+@{
+    ViewData["Title"] = "Dodaj zwierzę";
+}
+
+<h1>Dodaj nowe zwierzę</h1>
+
+<form method="post" asp-action="Create">
+    <div class="mb-3">
+        <label for="name" class="form-label">Imię</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+    <div class="mb-3">
+        <label for="species" class="form-label">Gatunek</label>
+        <select class="form-select" id="species" name="species" required>
+            <option value="Pies">Pies</option>
+            <option value="Kot">Kot</option>
+            <option value="Inne">Inne</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="breed" class="form-label">Rasa</label>
+        <input type="text" class="form-control" id="breed" name="breed">
+    </div>
+    <div class="mb-3">
+        <label for="age" class="form-label">Wiek</label>
+        <input type="number" class="form-control" id="age" name="age" required>
+    </div>
+    <div class="mb-3">
+        <label for="gender" class="form-label">Płeć</label>
+        <select class="form-select" id="gender" name="gender" required>
+            <option value="Samiec">Samiec</option>
+            <option value="Samica">Samica</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Opis</label>
+        <textarea class="form-control" id="description" name="description" rows="5"></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="photoUrl" class="form-label">URL zdjęcia</label>
+        <input type="text" class="form-control" id="photoUrl" name="photoUrl">
+    </div>
+    <button type="submit" class="btn btn-success">Dodaj</button>
+    <a href="@Url.Action("Animals", "Admin")" class="btn btn-secondary">Anuluj</a>
+</form>

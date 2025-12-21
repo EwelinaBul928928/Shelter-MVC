@@ -1,0 +1,26 @@
+@{
+    ViewData["Title"] = "Panel administratora";
+}
+
+<h1>Panel administratora</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Zwierzęta</h5>
+                <p class="card-text">Zarządzaj zwierzętami w schronisku</p>
+                <a href="@Url.Action("Animals", "Admin")" class="btn btn-primary">Zarządzaj</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Wnioski o adopcję</h5>
+                <p class="card-text">Przeglądaj i zarządzaj wnioskami</p>
+                <a href="@Url.Action("Adoptions", "Admin")" class="btn btn-primary">Zarządzaj</a>
+            </div>
+        </div>
+    </div>
+</div>

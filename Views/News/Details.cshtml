@@ -1,0 +1,19 @@
+@model Shelter.Models.NewsPost
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h1>@Model.Title</h1>
+
+<p class="text-muted">@Model.PublicationDate.ToString("dd.MM.yyyy") | @Model.Category</p>
+
+@if (!string.IsNullOrEmpty(Model.PhotoUrl))
+{
+    <img src="@Model.PhotoUrl" class="img-fluid mb-3" alt="@Model.Title">
+}
+
+<div>
+    @Html.Raw(Model.Content.Replace("\n", "<br>"))
+</div>
+
+<a href="@Url.Action("Index", "News")" class="btn btn-secondary mt-3">Powrót do aktualności</a>

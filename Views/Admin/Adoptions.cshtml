@@ -1,0 +1,48 @@
+@model List<Shelter.Models.AdoptionApplication>
+@{
+    ViewData["Title"] = "Wnioski o adopcję";
+}
+
+<h1>Wnioski o adopcję</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Użytkownik</th>
+            <th>Zwierzę</th>
+            <th>Data złożenia</th>
+            <th>Status</th>
+            <th>Uwagi</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var app in Model)
+        {
+            <tr>
+                <td>@app.User.FirstName @app.User.LastName</td>
+                <td>@app.Animal.Name (@app.Animal.Species)</td>
+                <td>@app.ApplicationDate.ToString("dd.MM.yyyy")</td>
+                <td>@app.Status</td>
+                <td>@(app.Notes ?? "-")</td>
+                <td>
+                    @if (app.Status == "Pending")
+                    {
+                        <form method="post" asp-action="UpdateAdoptionStatus" class="d-inline">
+                            <input type="hidden" name="id" value="@app.Id">
+                            <input type="hidden" name="status" value="Approved">
+                            <button type="submit" class="btn btn-sm btn-success">Zaakceptuj</button>
+                        </form>
+                        <form method="post" asp-action="UpdateAdoptionStatus" class="d-inline">
+                            <input type="hidden" name="id" value="@app.Id">
+                            <input type="hidden" name="status" value="Rejected">
+                            <button type="submit" class="btn btn-sm btn-danger">Odrzuć</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Admin")" class="btn btn-secondary">Powrót</a>
