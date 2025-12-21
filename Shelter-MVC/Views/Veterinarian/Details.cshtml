@@ -1,0 +1,116 @@
+@model Shelter_MVC.Models.Animal
+
+@{
+    ViewData["Title"] = "Historia zdrowia - " + Model.Name;
+}
+
+<h1>Historia zdrowia</h1>
+
+<div>
+    <h4>@Model.Name - @Model.Species?.Name</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Age)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Age) lat
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Species)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Species.Name)
+        </dd>
+    </dl>
+</div>
+
+<h4>Historia wizyt i zabiegów</h4>
+
+@if (User.IsInRole("Client") && !User.IsInRole("Administrator"))
+{
+    <p>
+        <a asp-action="CreateAppointment" asp-route-animalId="@Model.Id" class="btn btn-primary">Umów wizytę</a>
+    </p>
+}
+@if (User.IsInRole("Administrator"))
+{
+    <p>
+        <a asp-action="CreateRecord" asp-route-animalId="@Model.Id" class="btn btn-primary">Dodaj rekord zdrowia</a>
+    </p>
+}
+
+@if (Model.HealthRecords != null && Model.HealthRecords.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Data wizyty
+                </th>
+                <th>
+                    Opis zabiegu/szczepienia
+                </th>
+                <th>
+                    Weterynarz
+                </th>
+                <th>
+                    Status
+                </th>
+                <th>
+                    Data umówienia
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var record in Model.HealthRecords.OrderByDescending(hr => hr.VisitDate))
+            {
+                <tr>
+                    <td>
+                        @record.VisitDate.ToString("dd.MM.yyyy HH:mm")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => record.Description)
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(record.VetName))
+                        {
+                            @Html.DisplayFor(modelItem => record.VetName)
+                        }
+                        else
+                        {
+                            <text>-</text>
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => record.Status)
+                    </td>
+                    <td>
+                        @if (record.AppointmentDate.HasValue)
+                        {
+                            @record.AppointmentDate.Value.ToString("dd.MM.yyyy HH:mm")
+                        }
+                        else
+                        {
+                            <text>-</text>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Brak zarejestrowanych wizyt weterynaryjnych dla tego zwierzęcia.</p>
+}
+
+<div>
+    <a asp-action="Index">Powrót do listy</a>
+</div>

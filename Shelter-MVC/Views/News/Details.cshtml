@@ -1,0 +1,32 @@
+@model Shelter_MVC.Models.News
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h1>@Html.DisplayFor(model => model.Title)</h1>
+
+<div>
+    <hr />
+    <p class="text-muted">
+        Opublikowano: @Model.PublicationDate.ToString("dd.MM.yyyy HH:mm")
+        @if (!string.IsNullOrEmpty(Model.AuthorId))
+        {
+            <text> | Autor: @Model.AuthorId</text>
+        }
+    </p>
+    <hr />
+    <div class="mt-4">
+        @Html.DisplayFor(model => model.Content)
+    </div>
+</div>
+<div class="mt-4">
+    @if (User.IsInRole("Administrator"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Edytuj</a>
+        <text> | </text>
+        <a asp-action="Delete" asp-route-id="@Model?.Id">Usuń</a>
+        <text> | </text>
+    }
+    <a asp-action="Index">Powrót do listy</a>
+</div>

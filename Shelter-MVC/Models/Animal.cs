@@ -25,6 +25,9 @@ namespace Shelter_MVC.Models
         [Display(Name = "Czy zaadoptowany?")]
         public bool IsAdopted { get; set; } = false;
 
+        [Display(Name = "Zaadoptowany przez (ID użytkownika)")]
+        public string? AdoptedByUserId { get; set; }
+
         [Display(Name = "Gatunek")]
         public int SpeciesId { get; set; }
 

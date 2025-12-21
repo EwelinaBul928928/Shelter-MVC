@@ -3,6 +3,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shelter_MVC.Models
 {
+    public enum VisitStatus
+    {
+        Zaplanowana,
+        Odbyta,
+        Anulowana
+    }
+
     public class HealthRecord
     {
         [Key]
@@ -19,6 +26,13 @@ namespace Shelter_MVC.Models
 
         [Display(Name = "Weterynarz")]
         public string? VetName { get; set; }
+
+        [Display(Name = "Status wizyty")]
+        public VisitStatus Status { get; set; } = VisitStatus.Zaplanowana;
+
+        [Display(Name = "Data umówienia")]
+        [DataType(DataType.DateTime)]
+        public DateTime? AppointmentDate { get; set; }
 
         public int AnimalId { get; set; }
 

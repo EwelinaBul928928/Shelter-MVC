@@ -1,0 +1,47 @@
+@model IEnumerable<Shelter_MVC.Models.News>
+
+@{
+    ViewData["Title"] = "Aktualności";
+}
+
+<h1>Aktualności</h1>
+
+@if (User.IsInRole("Administrator"))
+{
+    <p>
+        <a asp-action="Create">Dodaj nową aktualność</a>
+    </p>
+}
+
+<div class="row">
+@foreach (var item in Model) {
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">@Html.DisplayFor(modelItem => item.Title)</h5>
+                <p class="card-text">
+                    @if (item.Content.Length > 150)
+                    {
+                        @item.Content.Substring(0, 150) <text>...</text>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.Content)
+                    }
+                </p>
+                <p class="text-muted small">
+                    Opublikowano: @item.PublicationDate.ToString("dd.MM.yyyy HH:mm")
+                </p>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Czytaj więcej</a>
+                @if (User.IsInRole("Administrator"))
+                {
+                    <text> | </text>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary">Edytuj</a>
+                    <text> | </text>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Usuń</a>
+                }
+            </div>
+        </div>
+    </div>
+}
+</div>
