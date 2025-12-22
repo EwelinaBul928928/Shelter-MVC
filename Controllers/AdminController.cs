@@ -19,6 +19,21 @@ namespace Shelter.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+
+            var totalAnimals = db.Animals.Count();
+            var availableAnimals = db.Animals.Count(a => a.Status == "Available");
+            var adoptedAnimals = db.Animals.Count(a => a.Status == "Adopted");
+            var pendingApplications = db.AdoptionApplications.Count(a => a.Status == "Pending");
+            var totalUsers = db.Users.Count();
+            var totalNews = db.NewsPosts.Count();
+
+            ViewBag.TotalAnimals = totalAnimals;
+            ViewBag.AvailableAnimals = availableAnimals;
+            ViewBag.AdoptedAnimals = adoptedAnimals;
+            ViewBag.PendingApplications = pendingApplications;
+            ViewBag.TotalUsers = totalUsers;
+            ViewBag.TotalNews = totalNews;
+
             return View();
         }
 

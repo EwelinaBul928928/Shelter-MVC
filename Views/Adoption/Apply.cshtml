@@ -12,13 +12,29 @@
         <p>Gatunek: @animal.Species | Rasa: @(animal.Breed ?? "Nieznana")</p>
     </div>
 
-    <form method="post" asp-action="Apply">
+    <form method="post" asp-action="Apply" id="applyForm">
         <input type="hidden" name="animalId" value="@animal.Id">
         <div class="mb-3">
             <label for="notes" class="form-label">Uwagi (opcjonalnie)</label>
-            <textarea class="form-control" id="notes" name="notes" rows="5"></textarea>
+            <textarea class="form-control" id="notes" name="notes" rows="5" maxlength="1000"></textarea>
+            <div class="form-text">Maksymalnie 1000 znaków.</div>
         </div>
         <button type="submit" class="btn btn-success">Złóż wniosek</button>
         <a href="@Url.Action("Details", "Animals", new { id = animal.Id })" class="btn btn-secondary">Anuluj</a>
     </form>
+
+<script>
+    (function() {
+        var form = document.getElementById('applyForm');
+        if (form) {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        }
+    })();
+</script>
 }

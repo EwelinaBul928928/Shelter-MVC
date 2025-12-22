@@ -4,42 +4,67 @@
 
 <h1>Dodaj nowe zwierzę</h1>
 
-<form method="post" asp-action="Create">
+<form method="post" asp-action="Create" id="createAnimalForm">
     <div class="mb-3">
         <label for="name" class="form-label">Imię</label>
-        <input type="text" class="form-control" id="name" name="name" required>
+        <input type="text" class="form-control" id="name" name="name" required maxlength="100">
+        <div class="invalid-feedback">Podaj imię zwierzęcia.</div>
     </div>
     <div class="mb-3">
         <label for="species" class="form-label">Gatunek</label>
         <select class="form-select" id="species" name="species" required>
+            <option value="">Wybierz gatunek</option>
             <option value="Pies">Pies</option>
             <option value="Kot">Kot</option>
             <option value="Inne">Inne</option>
         </select>
+        <div class="invalid-feedback">Wybierz gatunek.</div>
     </div>
     <div class="mb-3">
         <label for="breed" class="form-label">Rasa</label>
-        <input type="text" class="form-control" id="breed" name="breed">
+        <input type="text" class="form-control" id="breed" name="breed" maxlength="100">
     </div>
     <div class="mb-3">
         <label for="age" class="form-label">Wiek</label>
-        <input type="number" class="form-control" id="age" name="age" required>
+        <input type="number" class="form-control" id="age" name="age" required min="0" max="30">
+        <div class="form-text">Wiek w latach (0-30).</div>
+        <div class="invalid-feedback">Podaj poprawny wiek (0-30 lat).</div>
     </div>
     <div class="mb-3">
         <label for="gender" class="form-label">Płeć</label>
         <select class="form-select" id="gender" name="gender" required>
+            <option value="">Wybierz płeć</option>
             <option value="Samiec">Samiec</option>
             <option value="Samica">Samica</option>
         </select>
+        <div class="invalid-feedback">Wybierz płeć.</div>
     </div>
     <div class="mb-3">
         <label for="description" class="form-label">Opis</label>
-        <textarea class="form-control" id="description" name="description" rows="5"></textarea>
+        <textarea class="form-control" id="description" name="description" rows="5" maxlength="1000"></textarea>
+        <div class="form-text">Maksymalnie 1000 znaków.</div>
     </div>
     <div class="mb-3">
         <label for="photoUrl" class="form-label">URL zdjęcia</label>
-        <input type="text" class="form-control" id="photoUrl" name="photoUrl">
+        <input type="url" class="form-control" id="photoUrl" name="photoUrl" maxlength="500">
+        <div class="form-text">Opcjonalne. Podaj pełny URL do zdjęcia.</div>
+        <div class="invalid-feedback">Podaj poprawny URL.</div>
     </div>
     <button type="submit" class="btn btn-success">Dodaj</button>
     <a href="@Url.Action("Animals", "Admin")" class="btn btn-secondary">Anuluj</a>
 </form>
+
+<script>
+    (function() {
+        var form = document.getElementById('createAnimalForm');
+        if (form) {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        }
+    })();
+</script>

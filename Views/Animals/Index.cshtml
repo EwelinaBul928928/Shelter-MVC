@@ -51,11 +51,11 @@
             <div class="card">
                 @if (!string.IsNullOrEmpty(animal.PhotoUrl))
                 {
-                    <img src="@animal.PhotoUrl" class="card-img-top" alt="@animal.Name" style="height: 200px; object-fit: cover;">
+                    <img src="@animal.PhotoUrl" class="card-img-top" alt="@animal.Name" style="height: 250px; object-fit: cover;">
                 }
                 else
                 {
-                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 250px;">
                         <span class="text-white">Brak zdjęcia</span>
                     </div>
                 }
@@ -63,9 +63,11 @@
                     <h5 class="card-title">@animal.Name</h5>
                     <p class="card-text">
                         <strong>Gatunek:</strong> @animal.Species<br>
-                        <strong>Rasa:</strong> @(animal.Breed ?? "Nieznana")<br>
                         <strong>Wiek:</strong> @animal.Age lat<br>
-                        <strong>Płeć:</strong> @animal.Gender
+                        @if (!string.IsNullOrEmpty(animal.Description))
+                        {
+                            <strong>Opis:</strong> @(animal.Description.Length > 100 ? animal.Description.Substring(0, 100) + "..." : animal.Description)<br>
+                        }
                     </p>
                     <a href="@Url.Action("Details", "Animals", new { id = animal.Id })" class="btn btn-primary">Szczegóły</a>
                 </div>
