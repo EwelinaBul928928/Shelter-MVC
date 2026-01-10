@@ -1,0 +1,91 @@
+@model Shelter.Models.AdoptionApplication
+@{
+    ViewData["Title"] = "Szczegóły wniosku o adopcję";
+}
+
+<h1>Szczegóły wniosku o adopcję</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>Informacje o użytkowniku</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Imię i nazwisko:</strong> @Model.User.FirstName @Model.User.LastName</p>
+                <p><strong>Email:</strong> @Model.User.Email</p>
+                <p><strong>Telefon:</strong> @Model.Phone</p>
+                <p><strong>Adres:</strong> @Model.Address</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>Informacje o zwierzęciu</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Imię:</strong> @Model.Animal.Name</p>
+                <p><strong>Gatunek:</strong> @Model.Animal.Species</p>
+                <p><strong>Rasa:</strong> @(Model.Animal.Breed ?? "Nieznana")</p>
+                <p><strong>Wiek:</strong> @Model.Animal.Age lat</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h5>Szczegóły wniosku</h5>
+    </div>
+    <div class="card-body">
+        <p><strong>Data złożenia:</strong> @Model.ApplicationDate.ToString("dd.MM.yyyy HH:mm")</p>
+        <p><strong>Status:</strong> 
+            @if (Model.Status == "Pending")
+            {
+                <span class="badge bg-warning">Oczekujący</span>
+            }
+            else if (Model.Status == "Approved")
+            {
+                <span class="badge bg-success">Zaakceptowany</span>
+            }
+            else
+            {
+                <span class="badge bg-danger">Odrzucony</span>
+            }
+        </p>
+        <hr>
+        <p><strong>Doświadczenie ze zwierzętami:</strong></p>
+        <p>@Model.ExperienceWithAnimals</p>
+        <hr>
+        <p><strong>Posiada inne zwierzęta:</strong> @Model.HasOtherPets</p>
+        <p><strong>Posiada ogród:</strong> @Model.HasGarden</p>
+        <hr>
+        <p><strong>Sytuacja mieszkaniowa:</strong></p>
+        <p>@Model.LivingSituation</p>
+        @if (!string.IsNullOrEmpty(Model.Notes))
+        {
+            <hr>
+            <p><strong>Dodatkowe uwagi:</strong></p>
+            <p>@Model.Notes</p>
+        }
+    </div>
+</div>
+
+@if (Model.Status == "Pending")
+{
+    <div class="mb-3">
+        <form method="post" asp-action="UpdateAdoptionStatus" class="d-inline">
+            <input type="hidden" name="id" value="@Model.Id">
+            <input type="hidden" name="status" value="Approved">
+            <button type="submit" class="btn btn-success">Zaakceptuj wniosek</button>
+        </form>
+        <form method="post" asp-action="UpdateAdoptionStatus" class="d-inline">
+            <input type="hidden" name="id" value="@Model.Id">
+            <input type="hidden" name="status" value="Rejected">
+            <button type="submit" class="btn btn-danger">Odrzuć wniosek</button>
+        </form>
+    </div>
+}
+
+<a href="@Url.Action("Adoptions", "Admin")" class="btn btn-secondary">Powrót do listy</a>

@@ -12,7 +12,6 @@
             <th>Zwierzę</th>
             <th>Data złożenia</th>
             <th>Status</th>
-            <th>Uwagi</th>
             <th>Akcje</th>
         </tr>
     </thead>
@@ -23,9 +22,22 @@
                 <td>@app.User.FirstName @app.User.LastName</td>
                 <td>@app.Animal.Name (@app.Animal.Species)</td>
                 <td>@app.ApplicationDate.ToString("dd.MM.yyyy")</td>
-                <td>@app.Status</td>
-                <td>@(app.Notes ?? "-")</td>
                 <td>
+                    @if (app.Status == "Pending")
+                    {
+                        <span class="badge bg-warning">Oczekujący</span>
+                    }
+                    else if (app.Status == "Approved")
+                    {
+                        <span class="badge bg-success">Zaakceptowany</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Odrzucony</span>
+                    }
+                </td>
+                <td>
+                    <a href="@Url.Action("AdoptionDetails", "Admin", new { id = app.Id })" class="btn btn-sm btn-info">Szczegóły</a>
                     @if (app.Status == "Pending")
                     {
                         <form method="post" asp-action="UpdateAdoptionStatus" class="d-inline">

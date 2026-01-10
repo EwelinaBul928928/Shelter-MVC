@@ -26,7 +26,7 @@ namespace Shelter.Controllers
         }
 
         [HttpPost]
-        public IActionResult Apply(int animalId, string notes)
+        public IActionResult Apply(int animalId, string address, string phone, string experienceWithAnimals, string hasOtherPets, string hasGarden, string livingSituation, string? notes)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
@@ -39,6 +39,12 @@ namespace Shelter.Controllers
             application.AnimalId = animalId;
             application.ApplicationDate = DateTime.Now;
             application.Status = "Pending";
+            application.Address = address;
+            application.Phone = phone;
+            application.ExperienceWithAnimals = experienceWithAnimals;
+            application.HasOtherPets = hasOtherPets;
+            application.HasGarden = hasGarden;
+            application.LivingSituation = livingSituation;
             application.Notes = notes;
 
             db.AdoptionApplications.Add(application);

@@ -64,6 +64,26 @@ namespace Shelter.Controllers
             return View(applications);
         }
 
+        public IActionResult AdoptionDetails(int id)
+        {
+            if (HttpContext.Session.GetString("UserRole") != "Admin")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var application = db.AdoptionApplications
+                .Include(a => a.User)
+                .Include(a => a.Animal)
+                .FirstOrDefault(a => a.Id == id);
+
+            if (application == null)
+            {
+                return NotFound();
+            }
+
+            return View(application);
+        }
+
         [HttpPost]
         public IActionResult UpdateAdoptionStatus(int id, string status)
         {
