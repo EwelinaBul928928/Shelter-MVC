@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shelter_MVC.Data;
+using Shelter_MVC.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -39,7 +39,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -51,6 +50,8 @@ app.UseRouting();
 
 app.UseAuthentication(); 
 app.UseAuthorization();
+
+app.UseAssignClientRole();
 
 app.MapStaticAssets();
 app.MapRazorPages();

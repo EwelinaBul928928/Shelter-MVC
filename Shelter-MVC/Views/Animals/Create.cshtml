@@ -1,55 +1,48 @@
 ﻿@model Shelter_MVC.Models.Animal
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Dodaj zwierzę";
 }
 
-<h1>Create</h1>
+<h1>Dodaj nowe zwierzę</h1>
 
-<h4>Animal</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+            <div class="form-group mb-3">
+                <label asp-for="Name" class="control-label">Imię</label>
+                <input asp-for="Name" class="form-control" placeholder="Wprowadź imię zwierzęcia" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Age" class="control-label"></label>
-                <input asp-for="Age" class="form-control" />
+            <div class="form-group mb-3">
+                <label asp-for="Age" class="control-label">Wiek</label>
+                <input asp-for="Age" class="form-control" type="number" min="0" placeholder="Wprowadź wiek" />
                 <span asp-validation-for="Age" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+            <div class="form-group mb-3">
+                <label asp-for="Description" class="control-label">Opis</label>
+                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Opisz zwierzę"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="PhotoUrl" class="control-label"></label>
-                <input asp-for="PhotoUrl" class="form-control" />
+            <div class="form-group mb-3">
+                <label asp-for="PhotoUrl" class="control-label">URL zdjęcia</label>
+                <input asp-for="PhotoUrl" class="form-control" type="url" placeholder="https://example.com/photo.jpg" />
                 <span asp-validation-for="PhotoUrl" class="text-danger"></span>
+                <small class="form-text text-muted">Wklej link do zdjęcia zwierzęcia</small>
             </div>
-            <div class="form-group form-check">
+            <div class="form-group form-check mb-3">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsAdopted" /> @Html.DisplayNameFor(model => model.IsAdopted)
+                    <input class="form-check-input" asp-for="IsAdopted" /> Zaadoptowany
                 </label>
             </div>
             <div class="form-group">
-                <label asp-for="SpeciesId" class="control-label"></label>
-                <select asp-for="SpeciesId" class ="form-control" asp-items="ViewBag.SpeciesId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Dodaj zwierzę" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

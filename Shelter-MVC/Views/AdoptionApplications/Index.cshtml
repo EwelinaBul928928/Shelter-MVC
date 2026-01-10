@@ -1,67 +1,150 @@
 ﻿@model IEnumerable<Shelter_MVC.Models.AdoptionApplication>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = User.IsInRole("Administrator") ? "Wnioski adopcyjne" : "Moje wnioski";
 }
 
-<h1>Index</h1>
+<h1>@ViewData["Title"]</h1>
 
-@if (User.Identity.IsAuthenticated)
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (User.IsInRole("Client") && !User.IsInRole("Administrator"))
 {
     <p>
-        <a asp-action="Create">Create New</a>
+        <a asp-action="Create" class="btn btn-primary">Złóż nowy wniosek</a>
     </p>
 }
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ApplicationDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Message)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Animal)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ApplicationDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Message)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Animal.Name)
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+
+@if (Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ApplicationDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Animal)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Status)
+                </th>
                 @if (User.IsInRole("Administrator"))
                 {
-                    <text> | </text>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                    <text> | </text>
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <th>
+                        @Html.DisplayNameFor(model => model.UserId)
+                    </th>
                 }
-            </td>
-        </tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Message)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @item.ApplicationDate.ToString("dd.MM.yyyy HH:mm")
+                </td>
+                <td>
+                    <strong>@Html.DisplayFor(modelItem => item.Animal.Name)</strong>
+                </td>
+                <td>
+                    @switch (item.Status)
+                    {
+                        case Shelter_MVC.Models.ApplicationStatus.Oczekujący:
+                            <span class="badge bg-warning">Oczekujący</span>
+                            break;
+                        case Shelter_MVC.Models.ApplicationStatus.Zaakceptowany:
+                            <span class="badge bg-success">Zaakceptowany</span>
+                            break;
+                        case Shelter_MVC.Models.ApplicationStatus.Odrzucony:
+                            <span class="badge bg-danger">Odrzucony</span>
+                            break;
+                        default:
+                            <span class="badge bg-secondary">@item.Status</span>
+                            break;
+                    }
+                </td>
+                @if (User.IsInRole("Administrator"))
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserId)
+                    </td>
+                }
+                <td>
+                    @if (!string.IsNullOrEmpty(item.Message))
+                    {
+                        @if (item.Message.Length > 50)
+                        {
+                            @item.Message.Substring(0, 50) <text>...</text>
+                        }
+                        else
+                        {
+                            @item.Message
+                        }
+                    }
+                    else
+                    {
+                        <span class="text-muted">Brak wiadomości</span>
+                    }
+                </td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Szczegóły</a>
+                        @if (User.IsInRole("Administrator"))
+                        {
+                            @if (item.Status == Shelter_MVC.Models.ApplicationStatus.Oczekujący)
+                            {
+                                <form asp-action="Accept" asp-route-id="@item.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-success" title="Zaakceptuj wniosek" onclick="return confirm('Czy na pewno chcesz zaakceptować ten wniosek?');">
+                                        ✓
+                                    </button>
+                                </form>
+                                <form asp-action="Reject" asp-route-id="@item.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Odrzuć wniosek" onclick="return confirm('Czy na pewno chcesz odrzucić ten wniosek?');">
+                                        ✗
+                                    </button>
+                                </form>
+                            }
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Edytuj</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Usuń</a>
+                        }
+                    </div>
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="alert alert-info">
+        @if (User.IsInRole("Administrator"))
+        {
+            <p>Brak wniosków adopcyjnych.</p>
+        }
+        else
+        {
+            <p>Nie masz jeszcze żadnych wniosków adopcyjnych.</p>
+            <a asp-action="Create" class="btn btn-primary">Złóż pierwszy wniosek</a>
+        }
+    </div>
+}

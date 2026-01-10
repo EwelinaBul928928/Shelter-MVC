@@ -13,77 +13,89 @@
     </p>
 }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Species)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Age)
-            </th>
-            <th>
-                Ostatnia wizyta
-            </th>
-            <th>
-                Ostatni zabieg/szczepienie
-            </th>
-            <th>
-                Weterynarz
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        var latestRecord = item.HealthRecords?.OrderByDescending(hr => hr.VisitDate).FirstOrDefault();
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Species.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Age) lat
-            </td>
-            <td>
-                @if (latestRecord != null)
-                {
-                    @latestRecord.VisitDate.ToString("dd.MM.yyyy")
-                }
-                else
-                {
-                    <text>Brak danych</text>
-                }
-            </td>
-            <td>
-                @if (latestRecord != null)
-                {
-                    @Html.DisplayFor(modelItem => latestRecord.Description)
-                }
-                else
-                {
-                    <text>-</text>
-                }
-            </td>
-            <td>
-                @if (latestRecord != null && !string.IsNullOrEmpty(latestRecord.VetName))
-                {
-                    @Html.DisplayFor(modelItem => latestRecord.VetName)
-                }
-                else
-                {
-                    <text>-</text>
-                }
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.Id">Zobacz pełną historię</a>
-            </td>
-        </tr>
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Age)
+                </th>
+                <th>
+                    Ostatnia wizyta
+                </th>
+                <th>
+                    Ostatni zabieg/szczepienie
+                </th>
+                <th>
+                    Weterynarz
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) {
+            var latestRecord = item.HealthRecords?.OrderByDescending(hr => hr.VisitDate).FirstOrDefault();
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Age) lat
+                </td>
+                <td>
+                    @if (latestRecord != null)
+                    {
+                        @latestRecord.VisitDate.ToString("dd.MM.yyyy")
+                    }
+                    else
+                    {
+                        <text>Brak danych</text>
+                    }
+                </td>
+                <td>
+                    @if (latestRecord != null)
+                    {
+                        @Html.DisplayFor(modelItem => latestRecord.Description)
+                    }
+                    else
+                    {
+                        <text>-</text>
+                    }
+                </td>
+                <td>
+                    @if (latestRecord != null && !string.IsNullOrEmpty(latestRecord.VetName))
+                    {
+                        @Html.DisplayFor(modelItem => latestRecord.VetName)
+                    }
+                    else
+                    {
+                        <text>-</text>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Zobacz pełną historię</a>
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="alert alert-info mt-4">
+        <h5>Brak zwierząt</h5>
+        @if (User.IsInRole("Client") && !User.IsInRole("Administrator"))
+        {
+            <p>Nie masz jeszcze żadnych zaadoptowanych zwierząt. Po adopcji zwierzęcia, jego historia zdrowia będzie dostępna w tej sekcji.</p>
+            <a asp-controller="Animals" asp-action="Index" class="btn btn-primary">Przeglądaj zwierzęta do adopcji</a>
+        }
+        else
+        {
+            <p>Brak zwierząt w systemie.</p>
+        }
+    </div>
+}

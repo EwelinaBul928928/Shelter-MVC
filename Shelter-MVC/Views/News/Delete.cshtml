@@ -7,33 +7,40 @@
 <h1>Usuń aktualność</h1>
 
 <h3>Czy na pewno chcesz usunąć tę aktualność?</h3>
-<div>
-    <h4>News</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Content)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Content)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PublicationDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PublicationDate)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Usuń" class="btn btn-danger" /> |
-        <a asp-action="Index">Powrót do listy</a>
-    </form>
+<div class="card mt-4">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">
+                Tytuł
+            </dt>
+            <dd class="col-sm-9">
+                <strong>@Html.DisplayFor(model => model.Title)</strong>
+            </dd>
+            <dt class="col-sm-3">
+                Treść
+            </dt>
+            <dd class="col-sm-9">
+                @if (Model.Content.Length > 200)
+                {
+                    @Model.Content.Substring(0, 200) <text>...</text>
+                }
+                else
+                {
+                    @Html.DisplayFor(model => model.Content)
+                }
+            </dd>
+            <dt class="col-sm-3">
+                Data publikacji
+            </dt>
+            <dd class="col-sm-9">
+                @Model.PublicationDate.ToString("dd.MM.yyyy HH:mm")
+            </dd>
+        </dl>
+    </div>
 </div>
+    
+<form asp-action="Delete" class="mt-3">
+    <input type="hidden" asp-for="Id" />
+    <input type="submit" value="Usuń" class="btn btn-danger" />
+    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+</form>

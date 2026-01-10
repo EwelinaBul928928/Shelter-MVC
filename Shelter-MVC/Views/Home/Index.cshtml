@@ -1,8 +1,106 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model Shelter_MVC.Models.HomeViewModel
+
+@{
+    ViewData["Title"] = "Strona główna";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mb-5">
+    <h1 class="display-4">Witamy w Schronisku dla Zwierząt</h1>
+    <p class="lead">Znajdź swojego nowego przyjaciela</p>
 </div>
+
+@if (Model.LatestNews.Any())
+{
+    <div class="mb-5">
+        <h2 class="mb-3">Najnowsze aktualności</h2>
+        <div class="row">
+            @foreach (var news in Model.LatestNews)
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@news.Title</h5>
+                            <p class="card-text">
+                                @if (news.Content.Length > 100)
+                                {
+                                    @news.Content.Substring(0, 100) <text>...</text>
+                                }
+                                else
+                                {
+                                    @news.Content
+                                }
+                            </p>
+                            <p class="text-muted small mb-0">
+                                @news.PublicationDate.ToString("dd.MM.yyyy")
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <a asp-controller="News" asp-action="Details" asp-route-id="@news.Id" class="btn btn-sm btn-outline-primary">Czytaj więcej</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="text-center mt-3">
+            <a asp-controller="News" asp-action="Index" class="btn btn-outline-secondary">Wszystkie aktualności</a>
+        </div>
+    </div>
+}
+
+@if (Model.LatestAnimals.Any())
+{
+    <div>
+        <h2 class="mb-3">Najnowsze zwierzęta do adopcji</h2>
+        <div class="row">
+            @foreach (var animal in Model.LatestAnimals)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        @if (!string.IsNullOrEmpty(animal.PhotoUrl))
+                        {
+                            <img src="@animal.PhotoUrl" class="card-img-top" alt="@animal.Name" style="height: 200px; object-fit: cover;" onerror="this.src='https://via.placeholder.com/300x200?text=Brak+zdjęcia'">
+                        }
+                        else
+                        {
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <span class="text-muted">Brak zdjęcia</span>
+                            </div>
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@animal.Name</h5>
+                            <p class="card-text">
+                                <strong>Wiek:</strong> @animal.Age lat
+                                @if (!string.IsNullOrEmpty(animal.Description))
+                                {
+                                    <br/>
+                                    @if (animal.Description.Length > 80)
+                                    {
+                                        @animal.Description.Substring(0, 80) <text>...</text>
+                                    }
+                                    else
+                                    {
+                                        @animal.Description
+                                    }
+                                }
+                            </p>
+                            <span class="badge bg-success">Gotowy do adopcji</span>
+                        </div>
+                        <div class="card-footer">
+                            <a asp-controller="Animals" asp-action="Details" asp-route-id="@animal.Id" class="btn btn-primary btn-sm">Zobacz szczegóły</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="text-center mt-3">
+            <a asp-controller="Animals" asp-action="Index" class="btn btn-primary btn-lg">Zobacz wszystkie zwierzęta</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info text-center">
+        <h4>Brak zwierząt do adopcji</h4>
+        <p>Wszystkie nasze zwierzęta znalazły już dom! Sprawdź ponownie wkrótce.</p>
+    </div>
+}

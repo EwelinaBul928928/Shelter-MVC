@@ -21,15 +21,12 @@ namespace Shelter_MVC.Controllers
             _context = context;
         }
 
-        // GET: Veterinarian
         public async Task<IActionResult> Index()
         {
             var query = _context.Animals
-                .Include(a => a.Species)
                 .Include(a => a.HealthRecords)
                 .AsQueryable();
 
-            // Klienci widzą tylko swoje zadoptowane zwierzęta
             if (User.IsInRole("Client") && !User.IsInRole("Administrator"))
             {
                 var userId = User.Identity?.Name;
@@ -40,7 +37,6 @@ namespace Shelter_MVC.Controllers
             return View(animals);
         }
 
-        // GET: Veterinarian/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -49,11 +45,9 @@ namespace Shelter_MVC.Controllers
             }
 
             var query = _context.Animals
-                .Include(a => a.Species)
                 .Include(a => a.HealthRecords)
                 .AsQueryable();
 
-            // Klienci mogą zobaczyć tylko swoje zwierzęta
             if (User.IsInRole("Client") && !User.IsInRole("Administrator"))
             {
                 var userId = User.Identity?.Name;
@@ -70,7 +64,6 @@ namespace Shelter_MVC.Controllers
             return View(animal);
         }
 
-        // GET: Veterinarian/CreateAppointment/5
         [Authorize(Roles = "Client")]
         public async Task<IActionResult> CreateAppointment(int? animalId)
         {
@@ -93,7 +86,6 @@ namespace Shelter_MVC.Controllers
             return View();
         }
 
-        // POST: Veterinarian/CreateAppointment
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Client")]
@@ -110,10 +102,11 @@ namespace Shelter_MVC.Controllers
                     return NotFound();
                 }
 
-                healthRecord.AppointmentDate = DateTime.Now;
+                healthRecord.AppointmentDate = healthRecord.VisitDate;
                 healthRecord.Status = VisitStatus.Zaplanowana;
                 _context.Add(healthRecord);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Wizyta została umówiona pomyślnie!";
                 return RedirectToAction(nameof(Details), new { id = healthRecord.AnimalId });
             }
 
@@ -123,7 +116,6 @@ namespace Shelter_MVC.Controllers
             return View(healthRecord);
         }
 
-        // GET: Veterinarian/CreateRecord/5 (dla administratora - dodawanie wizyt w schronisku)
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> CreateRecord(int? animalId)
         {
@@ -145,7 +137,6 @@ namespace Shelter_MVC.Controllers
             return View();
         }
 
-        // POST: Veterinarian/CreateRecord
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
@@ -160,6 +151,7 @@ namespace Shelter_MVC.Controllers
                 }
                 _context.Add(healthRecord);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Rekord zdrowia został dodany pomyślnie!";
                 return RedirectToAction(nameof(Index));
             }
 

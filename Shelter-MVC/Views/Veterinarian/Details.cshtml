@@ -7,7 +7,7 @@
 <h1>Historia zdrowia</h1>
 
 <div>
-    <h4>@Model.Name - @Model.Species?.Name</h4>
+    <h4>@Model.Name</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -21,12 +21,6 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Age) lat
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Species)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Species.Name)
         </dd>
     </dl>
 </div>

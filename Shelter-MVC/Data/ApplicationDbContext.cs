@@ -12,7 +12,6 @@ namespace Shelter_MVC.Data
         }
 
         public DbSet<Animal> Animals { get; set; }
-        public DbSet<Species> Species { get; set; }
         public DbSet<HealthRecord> HealthRecords { get; set; }
         public DbSet<AdoptionApplication> AdoptionApplications { get; set; }
         public DbSet<News> News { get; set; }

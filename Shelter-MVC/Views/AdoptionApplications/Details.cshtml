@@ -1,52 +1,93 @@
 ﻿@model Shelter_MVC.Models.AdoptionApplication
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Szczegóły wniosku";
 }
 
-<h1>Details</h1>
+<h1>Szczegóły wniosku adopcyjnego</h1>
 
-<div>
-    <h4>AdoptionApplication</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ApplicationDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ApplicationDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Message)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Message)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UserId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UserId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Animal)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Animal.Name)
-        </dd>
-    </dl>
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">
+                Data złożenia
+            </dt>
+            <dd class="col-sm-9">
+                @Model.ApplicationDate.ToString("dd.MM.yyyy HH:mm")
+            </dd>
+            <dt class="col-sm-3">
+                Zwierzę
+            </dt>
+            <dd class="col-sm-9">
+                <strong>@Model.Animal.Name</strong>
+                <a asp-controller="Animals" asp-action="Details" asp-route-id="@Model.Animal.Id" class="btn btn-sm btn-outline-primary ms-2">Zobacz zwierzę</a>
+            </dd>
+            <dt class="col-sm-3">
+                Status
+            </dt>
+            <dd class="col-sm-9">
+                @switch (Model.Status)
+                {
+                    case Shelter_MVC.Models.ApplicationStatus.Oczekujący:
+                        <span class="badge bg-warning">Oczekujący</span>
+                        break;
+                    case Shelter_MVC.Models.ApplicationStatus.Zaakceptowany:
+                        <span class="badge bg-success">Zaakceptowany</span>
+                        break;
+                    case Shelter_MVC.Models.ApplicationStatus.Odrzucony:
+                        <span class="badge bg-danger">Odrzucony</span>
+                        break;
+                    default:
+                        <span class="badge bg-secondary">@Model.Status</span>
+                        break;
+                }
+            </dd>
+            @if (User.IsInRole("Administrator"))
+            {
+                <dt class="col-sm-3">
+                    Użytkownik
+                </dt>
+                <dd class="col-sm-9">
+                    @Model.UserId
+                </dd>
+            }
+            <dt class="col-sm-3">
+                Wiadomość
+            </dt>
+            <dd class="col-sm-9">
+                @if (string.IsNullOrEmpty(Model.Message))
+                {
+                    <span class="text-muted">Brak wiadomości</span>
+                }
+                else
+                {
+                    <p>@Model.Message</p>
+                }
+            </dd>
+        </dl>
+    </div>
 </div>
-<div>
+
+<div class="mt-3">
     @if (User.IsInRole("Administrator"))
     {
-        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
-        <text> | </text>
+        @if (Model.Status == Shelter_MVC.Models.ApplicationStatus.Oczekujący)
+        {
+            <form asp-action="Accept" asp-route-id="@Model.Id" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-success" onclick="return confirm('Czy na pewno chcesz zaakceptować ten wniosek? Zwierzę zostanie oznaczone jako zaadoptowane, a pozostałe wnioski dla tego zwierzęcia zostaną odrzucone.');">
+                    ✓ Zaakceptuj wniosek
+                </button>
+            </form>
+            <form asp-action="Reject" asp-route-id="@Model.Id" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Czy na pewno chcesz odrzucić ten wniosek?');">
+                    ✗ Odrzuć wniosek
+                </button>
+            </form>
+        }
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-secondary">Edytuj</a>
+        <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger">Usuń</a>
     }
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">Powrót do listy</a>
 </div>

@@ -19,7 +19,6 @@ namespace Shelter_MVC.Controllers
             _context = context;
         }
 
-        // GET: News
         public async Task<IActionResult> Index()
         {
             var news = await _context.News
@@ -28,7 +27,6 @@ namespace Shelter_MVC.Controllers
             return View(news);
         }
 
-        // GET: News/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,14 +44,12 @@ namespace Shelter_MVC.Controllers
             return View(news);
         }
 
-        // GET: News/Create
         [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: News/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
@@ -69,7 +65,6 @@ namespace Shelter_MVC.Controllers
             return View(news);
         }
 
-        // GET: News/Edit/5
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -86,7 +81,6 @@ namespace Shelter_MVC.Controllers
             return View(news);
         }
 
-        // POST: News/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
@@ -115,12 +109,12 @@ namespace Shelter_MVC.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "Aktualność została zaktualizowana pomyślnie!";
                 return RedirectToAction(nameof(Index));
             }
             return View(news);
         }
 
-        // GET: News/Delete/5
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -139,7 +133,6 @@ namespace Shelter_MVC.Controllers
             return View(news);
         }
 
-        // POST: News/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
@@ -152,6 +145,7 @@ namespace Shelter_MVC.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Aktualność została usunięta pomyślnie!";
             return RedirectToAction(nameof(Index));
         }
 

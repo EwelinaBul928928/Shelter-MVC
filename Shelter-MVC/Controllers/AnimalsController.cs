@@ -20,12 +20,10 @@ namespace Shelter_MVC.Controllers
             _context = context;
         }
 
-        // GET: Animals
         public async Task<IActionResult> Index()
         {
-            var query = _context.Animals.Include(a => a.Species).AsQueryable();
+            var query = _context.Animals.AsQueryable();
             
-            // Klienci widzą tylko zwierzęta gotowe do adopcji
             if (User.IsInRole("Client") && !User.IsInRole("Administrator"))
             {
                 query = query.Where(a => !a.IsAdopted);
@@ -34,7 +32,6 @@ namespace Shelter_MVC.Controllers
             return View(await query.ToListAsync());
         }
 
-        // GET: Animals/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -43,7 +40,6 @@ namespace Shelter_MVC.Controllers
             }
 
             var animal = await _context.Animals
-                .Include(a => a.Species)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (animal == null)
             {
@@ -53,33 +49,27 @@ namespace Shelter_MVC.Controllers
             return View(animal);
         }
 
-        // GET: Animals/Create
         [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
-            ViewData["SpeciesId"] = new SelectList(_context.Species, "Id", "Name");
             return View();
         }
 
-        // POST: Animals/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Create([Bind("Id,Name,Age,Description,PhotoUrl,IsAdopted,SpeciesId")] Animal animal)
+        public async Task<IActionResult> Create([Bind("Id,Name,Age,Description,PhotoUrl,IsAdopted")] Animal animal)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(animal);
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Zwierzę zostało dodane pomyślnie!";
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SpeciesId"] = new SelectList(_context.Species, "Id", "Name", animal.SpeciesId);
             return View(animal);
         }
 
-        // GET: Animals/Edit/5
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -93,17 +83,13 @@ namespace Shelter_MVC.Controllers
             {
                 return NotFound();
             }
-            ViewData["SpeciesId"] = new SelectList(_context.Species, "Id", "Name", animal.SpeciesId);
             return View(animal);
         }
 
-        // POST: Animals/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Age,Description,PhotoUrl,IsAdopted,SpeciesId")] Animal animal)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Age,Description,PhotoUrl,IsAdopted")] Animal animal)
         {
             if (id != animal.Id)
             {
@@ -128,13 +114,12 @@ namespace Shelter_MVC.Controllers
                         throw;
                     }
                 }
+                TempData["SuccessMessage"] = "Zwierzę zostało zaktualizowane pomyślnie!";
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SpeciesId"] = new SelectList(_context.Species, "Id", "Name", animal.SpeciesId);
             return View(animal);
         }
 
-        // GET: Animals/Delete/5
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -144,7 +129,6 @@ namespace Shelter_MVC.Controllers
             }
 
             var animal = await _context.Animals
-                .Include(a => a.Species)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (animal == null)
             {
@@ -154,7 +138,6 @@ namespace Shelter_MVC.Controllers
             return View(animal);
         }
 
-        // POST: Animals/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
@@ -167,6 +150,7 @@ namespace Shelter_MVC.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Zwierzę zostało usunięte pomyślnie!";
             return RedirectToAction(nameof(Index));
         }
 

@@ -28,12 +28,6 @@ namespace Shelter_MVC.Models
         [Display(Name = "Zaadoptowany przez (ID użytkownika)")]
         public string? AdoptedByUserId { get; set; }
 
-        [Display(Name = "Gatunek")]
-        public int SpeciesId { get; set; }
-
-        [ForeignKey("SpeciesId")]
-        public virtual Species? Species { get; set; }
-
         public virtual ICollection<HealthRecord>? HealthRecords { get; set; }
     }
 }
