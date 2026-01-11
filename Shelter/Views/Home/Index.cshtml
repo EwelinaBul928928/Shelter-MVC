@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Strona główna";
+}
+
+<div class="text-center">
+    <h1 class="display-4 mb-4">Schronisko dla zwierząt</h1>
+    <p class="lead mb-5" style="font-size: 1.3rem; color: #4a7c2a;">Znajdź swojego nowego przyjaciela!</p>
+    <div class="mt-4">
+        <a href="@Url.Action("Index", "Animals")" class="btn btn-success btn-lg me-3">Zwierzęta do adopcji</a>
+        <a href="@Url.Action("Index", "News")" class="btn btn-success btn-lg">Aktualności</a>
+    </div>
+    <div class="mt-5">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Adopcja</h5>
+                        <p class="card-text">Daj dom potrzebującym zwierzętom</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Opieka</h5>
+                        <p class="card-text">Profesjonalna opieka weterynaryjna</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Wsparcie</h5>
+                        <p class="card-text">Pomagamy w każdej sytuacji</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

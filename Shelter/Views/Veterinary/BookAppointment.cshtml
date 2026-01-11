@@ -1,0 +1,140 @@
+@{
+    ViewData["Title"] = "Zapisz na wizytę";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Zapisz na wizytę weterynaryjną</h1>
+
+    <form method="post" action="@Url.Action("BookAppointment", "Veterinary")">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="animalType" class="form-label">Wybierz zwierzę *</label>
+                    <select class="form-select" id="animalType" name="animalType" required onchange="updateAnimalSelect()">
+                        <option value="">Wybierz typ</option>
+                        <option value="adopted">Zaadoptowane ze schroniska</option>
+                        <option value="client">Moje zarejestrowane zwierzę</option>
+                    </select>
+                </div>
+
+                <div class="mb-3" id="adoptedAnimalDiv" style="display: none;">
+                    <label for="animalId" class="form-label">Zaadoptowane zwierzę *</label>
+                    <select class="form-select" id="animalId" name="animalId">
+                        <option value="">Wybierz zwierzę</option>
+                        @if (ViewBag.AdoptedAnimals != null)
+                        {
+                            @foreach (var animal in ViewBag.AdoptedAnimals as List<Shelter.Models.Animal>)
+                            {
+                                <option value="@animal.Id">@animal.Name - @animal.Species</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3" id="clientAnimalDiv" style="display: none;">
+                    <label for="clientAnimalId" class="form-label">Moje zwierzę *</label>
+                    <select class="form-select" id="clientAnimalId" name="clientAnimalId">
+                        <option value="">Wybierz zwierzę</option>
+                        @if (ViewBag.ClientAnimals != null)
+                        {
+                            @foreach (var animal in ViewBag.ClientAnimals as List<Shelter.Models.ClientAnimal>)
+                            {
+                                <option value="@animal.Id">@animal.Name - @animal.Species</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="veterinarianId" class="form-label">Weterynarz *</label>
+                    <select class="form-select" id="veterinarianId" name="veterinarianId" required>
+                        <option value="">Wybierz weterynarza</option>
+                        @if (ViewBag.Veterinarians != null)
+                        {
+                            @foreach (var vet in ViewBag.Veterinarians as List<Shelter.Models.Veterinarian>)
+                            {
+                                <option value="@vet.Id">@vet.FirstName @vet.LastName - @(vet.Specialization ?? "")</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="serviceId" class="form-label">Usługa *</label>
+                    <select class="form-select" id="serviceId" name="serviceId" required>
+                        <option value="">Wybierz usługę</option>
+                        @if (ViewBag.Services != null)
+                        {
+                            @foreach (var service in ViewBag.Services as List<Shelter.Models.VeterinaryService>)
+                            {
+                                <option value="@service.Id" data-price="@service.Price">@service.Name - @service.Price.ToString("C")</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="appointmentDate" class="form-label">Data i godzina wizyty *</label>
+                    <input type="datetime-local" class="form-control" id="appointmentDate" name="appointmentDate" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="notes" class="form-label">Uwagi</label>
+                    <textarea class="form-control" id="notes" name="notes" rows="5" maxlength="500"></textarea>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>Koszt wizyty:</strong> <span id="costDisplay">Wybierz usługę</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Zapisz na wizytę</button>
+            <a href="@Url.Action("MyClientAnimals", "Veterinary")" class="btn btn-secondary">Anuluj</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    function updateAnimalSelect() {
+        var type = document.getElementById('animalType').value;
+        var adoptedDiv = document.getElementById('adoptedAnimalDiv');
+        var clientDiv = document.getElementById('clientAnimalDiv');
+        var animalId = document.getElementById('animalId');
+        var clientAnimalId = document.getElementById('clientAnimalId');
+
+        if (type === 'adopted') {
+            adoptedDiv.style.display = 'block';
+            clientDiv.style.display = 'none';
+            animalId.required = true;
+            clientAnimalId.required = false;
+            clientAnimalId.value = '';
+        } else if (type === 'client') {
+            adoptedDiv.style.display = 'none';
+            clientDiv.style.display = 'block';
+            animalId.required = false;
+            clientAnimalId.required = true;
+            animalId.value = '';
+        } else {
+            adoptedDiv.style.display = 'none';
+            clientDiv.style.display = 'none';
+            animalId.required = false;
+            clientAnimalId.required = false;
+            animalId.value = '';
+            clientAnimalId.value = '';
+        }
+    }
+
+    document.getElementById('serviceId').addEventListener('change', function() {
+        var selectedOption = this.options[this.selectedIndex];
+        var price = selectedOption.getAttribute('data-price');
+        if (price) {
+            document.getElementById('costDisplay').textContent = parseFloat(price).toFixed(2) + ' zł';
+        } else {
+            document.getElementById('costDisplay').textContent = 'Wybierz usługę';
+        }
+    });
+</script>

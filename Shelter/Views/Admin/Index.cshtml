@@ -1,0 +1,98 @@
+@{
+    ViewData["Title"] = "Panel administratora";
+}
+
+<h1 class="mb-4">Panel administratora</h1>
+
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card text-white" style="background: linear-gradient(135deg, #4a7c2a 0%, #6b9f3d 100%);">
+            <div class="card-body">
+                <h5 class="card-title">Wszystkie zwierzęta</h5>
+                <h2 class="mb-0">@(ViewBag.TotalAnimals ?? 0)</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white" style="background: linear-gradient(135deg, #6b9f3d 0%, #8bc34a 100%);">
+            <div class="card-body">
+                <h5 class="card-title">Dostępne</h5>
+                <h2 class="mb-0">@(ViewBag.AvailableAnimals ?? 0)</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white" style="background: linear-gradient(135deg, #2d5016 0%, #4a7c2a 100%);">
+            <div class="card-body">
+                <h5 class="card-title">Zaadoptowane</h5>
+                <h2 class="mb-0">@(ViewBag.AdoptedAnimals ?? 0)</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white" style="background: linear-gradient(135deg, #8bc34a 0%, #aed581 100%);">
+            <div class="card-body">
+                <h5 class="card-title">Oczekujące wnioski</h5>
+                <h2 class="mb-0">@(ViewBag.PendingApplications ?? 0)</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Użytkownicy</h5>
+                <p class="card-text">Łączna liczba zarejestrowanych użytkowników: <strong>@(ViewBag.TotalUsers ?? 0)</strong></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Aktualności</h5>
+                <p class="card-text">Łączna liczba opublikowanych aktualności: <strong>@(ViewBag.TotalNews ?? 0)</strong></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Zwierzęta</h5>
+                <p class="card-text">Zarządzaj zwierzętami w schronisku</p>
+                <a href="@Url.Action("Animals", "Admin")" class="btn btn-success">Zarządzaj</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Wnioski o adopcję</h5>
+                <p class="card-text">Przeglądaj i zarządzaj wnioskami</p>
+                <a href="@Url.Action("Adoptions", "Admin")" class="btn btn-success">🔧 Zarządzaj</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Historia zwierząt</h5>
+                <p class="card-text">Przeglądaj historię wizyt weterynaryjnych</p>
+                <a href="@Url.Action("AllAnimalsHistory", "Veterinary")" class="btn btn-success">Przeglądaj</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Zapisy na wizyty</h5>
+                <p class="card-text">Zarządzaj zapisami na wizyty weterynaryjne</p>
+                <a href="@Url.Action("ShelterAppointments", "Veterinary")" class="btn btn-success">🔧 Zarządzaj</a>
+            </div>
+        </div>
+    </div>
+</div>

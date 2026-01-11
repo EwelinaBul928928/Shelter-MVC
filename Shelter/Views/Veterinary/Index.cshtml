@@ -1,0 +1,88 @@
+@{
+    ViewData["Title"] = "Usługi weterynaryjne";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Usługi weterynaryjne</h1>
+
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="mb-3">Nasi weterynarze</h2>
+            <div class="row">
+                @foreach (var vet in ViewBag.Veterinarians as List<Shelter.Models.Veterinarian>)
+                {
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">@vet.FirstName @vet.LastName</h5>
+                                @if (!string.IsNullOrEmpty(vet.Specialization))
+                                {
+                                    <p class="text-muted"><strong>Specjalizacja:</strong> @vet.Specialization</p>
+                                }
+                                @if (!string.IsNullOrEmpty(vet.Phone))
+                                {
+                                    <p><strong>Telefon:</strong> @vet.Phone</p>
+                                }
+                                @if (!string.IsNullOrEmpty(vet.Email))
+                                {
+                                    <p><strong>Email:</strong> @vet.Email</p>
+                                }
+                                @if (!string.IsNullOrEmpty(vet.Description))
+                                {
+                                    <p class="card-text">@vet.Description</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-3">Cennik usług</h2>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Nazwa usługi</th>
+                            <th>Kategoria</th>
+                            <th>Opis</th>
+                            <th>Cena</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var service in ViewBag.Services as List<Shelter.Models.VeterinaryService>)
+                        {
+                            <tr>
+                                <td><strong>@service.Name</strong></td>
+                                <td>@(service.Category ?? "-")</td>
+                                <td>@(service.Description ?? "-")</td>
+                                <td class="text-success fw-bold">@service.Price.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h5>Zapisz się na wizytę</h5>
+                <p>Możesz zapisać swoje zwierzę (zaadoptowane ze schroniska lub własne) na wizytę weterynaryjną. Wybierz weterynarza, usługę i termin wizyty.</p>
+                @if (Context.Session.GetInt32("UserId") != null)
+                {
+                    <a href="@Url.Action("BookAppointment", "Veterinary")" class="btn btn-success btn-lg me-2">Zapisz na wizytę</a>
+                    <a href="@Url.Action("MyClientAnimals", "Veterinary")" class="btn btn-success btn-lg">Przejdź do moich zwierząt</a>
+                }
+                else
+                {
+                    <p class="mb-0">Aby zapisać się na wizytę, musisz się <a href="@Url.Action("Login", "Account")">zalogować</a>.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

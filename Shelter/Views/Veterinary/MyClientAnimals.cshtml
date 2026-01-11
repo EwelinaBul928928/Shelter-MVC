@@ -1,0 +1,206 @@
+@{
+    ViewData["Title"] = "Moje zwierzęta";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Moje zwierzęta</h1>
+
+    <div class="mb-3">
+        <a href="@Url.Action("RegisterClientAnimal", "Veterinary")" class="btn btn-primary">Zarejestruj nowe zwierzę</a>
+        <a href="@Url.Action("BookAppointment", "Veterinary")" class="btn btn-success">Zapisz na wizytę</a>
+    </div>
+
+    <h3 class="mt-4 mb-3">Zarejestrowane zwierzęta</h3>
+    @if (ViewBag.ClientAnimals != null && ((List<Shelter.Models.ClientAnimal>)ViewBag.ClientAnimals).Any())
+    {
+        @foreach (var animal in ViewBag.ClientAnimals as List<Shelter.Models.ClientAnimal>)
+        {
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">@animal.Name - @animal.Species</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            @if (!string.IsNullOrEmpty(animal.PhotoUrl))
+                            {
+                                <img src="@animal.PhotoUrl" class="img-fluid rounded" alt="@animal.Name" style="max-height: 200px;">
+                            }
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Rasa:</strong> @(animal.Breed ?? "Nieznana")</p>
+                            <p><strong>Wiek:</strong> @animal.Age lat</p>
+                            <p><strong>Płeć:</strong> @animal.Gender</p>
+                            @if (!string.IsNullOrEmpty(animal.Description))
+                            {
+                                <p><strong>Opis:</strong> @animal.Description</p>
+                            }
+                        </div>
+                    </div>
+
+                    @{
+                        var animalAppointments = ((List<Shelter.Models.VeterinaryAppointment>)ViewBag.Appointments)
+                            .Where(a => a.ClientAnimalId == animal.Id)
+                            .OrderByDescending(a => a.AppointmentDate)
+                            .ToList();
+                    }
+
+                    @if (animalAppointments.Any())
+                    {
+                        <h5 class="mt-3 mb-3">Historia wizyt weterynaryjnych</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Data wizyty</th>
+                                        <th>Usługa</th>
+                                        <th>Weterynarz</th>
+                                        <th>Uwagi</th>
+                                        <th>Status</th>
+                                        <th>Koszt</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var appointment in animalAppointments)
+                                    {
+                                        <tr>
+                                            <td>@appointment.AppointmentDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                            <td>@(appointment.Service?.Name ?? "-")</td>
+                                            <td>@(appointment.Veterinarian != null ? $"{appointment.Veterinarian.FirstName} {appointment.Veterinarian.LastName}" : "-")</td>
+                                            <td>@(appointment.Notes ?? "-")</td>
+                                            <td>
+                                                @if (appointment.Status == "Scheduled")
+                                                {
+                                                    <span class="badge bg-primary">Zaplanowana</span>
+                                                }
+                                                else if (appointment.Status == "Completed")
+                                                {
+                                                    <span class="badge bg-success">Zakończona</span>
+                                                }
+                                                else if (appointment.Status == "Cancelled")
+                                                {
+                                                    <span class="badge bg-danger">Anulowana</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary">@appointment.Status</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (appointment.Cost.HasValue)
+                                                {
+                                                    <span class="text-success fw-bold">@appointment.Cost.Value.ToString("C")</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-secondary">
+                            <p class="mb-0">Brak historii wizyt weterynaryjnych dla tego zwierzęcia.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <p class="mb-0">Nie masz jeszcze zarejestrowanych własnych zwierząt.</p>
+        </div>
+    }
+
+    <h3 class="mt-4 mb-3">Zaadoptowane zwierzęta ze schroniska</h3>
+    @if (ViewBag.AdoptedAnimals != null && ((List<Shelter.Models.Animal>)ViewBag.AdoptedAnimals).Any())
+    {
+        @foreach (var animal in ViewBag.AdoptedAnimals as List<Shelter.Models.Animal>)
+        {
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">@animal.Name - @animal.Species</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            @if (!string.IsNullOrEmpty(animal.PhotoUrl))
+                            {
+                                <img src="@animal.PhotoUrl" class="img-fluid rounded" alt="@animal.Name" style="max-height: 200px;">
+                            }
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Rasa:</strong> @(animal.Breed ?? "Nieznana")</p>
+                            <p><strong>Wiek:</strong> @animal.Age lat</p>
+                            <p><strong>Płeć:</strong> @animal.Gender</p>
+                            @if (!string.IsNullOrEmpty(animal.Description))
+                            {
+                                <p><strong>Opis:</strong> @animal.Description</p>
+                            }
+                        </div>
+                    </div>
+
+                    @if (animal.VeterinaryVisits != null && animal.VeterinaryVisits.Any())
+                    {
+                        <h5 class="mt-3 mb-3">Historia wizyt weterynaryjnych</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Data wizyty</th>
+                                        <th>Usługa</th>
+                                        <th>Weterynarz</th>
+                                        <th>Opis</th>
+                                        <th>Diagnoza</th>
+                                        <th>Koszt</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var visit in animal.VeterinaryVisits.OrderByDescending(v => v.VisitDate))
+                                    {
+                                        <tr>
+                                            <td>@visit.VisitDate.ToString("dd.MM.yyyy")</td>
+                                            <td>@(visit.Service?.Name ?? "-")</td>
+                                            <td>@(visit.Veterinarian != null ? $"{visit.Veterinarian.FirstName} {visit.Veterinarian.LastName}" : "-")</td>
+                                            <td>@(visit.Description ?? "-")</td>
+                                            <td>@(visit.Diagnosis ?? "-")</td>
+                                            <td>
+                                                @if (visit.Cost.HasValue)
+                                                {
+                                                    <span class="text-success fw-bold">@visit.Cost.Value.ToString("C")</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-secondary">
+                            <p class="mb-0">Brak historii wizyt weterynaryjnych dla tego zwierzęcia.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <p class="mb-0">Nie masz jeszcze zaadoptowanych zwierząt ze schroniska.</p>
+        </div>
+    }
+</div>

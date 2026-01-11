@@ -1,0 +1,76 @@
+@{
+    ViewData["Title"] = "Zapisz zwierzę ze schroniska";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Zapisz zwierzę ze schroniska na wizytę</h1>
+
+    <div class="alert alert-info">
+        <strong>Uwaga:</strong> Wizyty dla zwierząt ze schroniska są bezpłatne.
+    </div>
+
+    <form method="post" action="@Url.Action("BookAppointmentForShelterAnimal", "Veterinary")">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="animalId" class="form-label">Zwierzę ze schroniska *</label>
+                    <select class="form-select" id="animalId" name="animalId" required>
+                        <option value="">Wybierz zwierzę</option>
+                        @if (ViewBag.Animals != null)
+                        {
+                            @foreach (var animal in ViewBag.Animals as List<Shelter.Models.Animal>)
+                            {
+                                <option value="@animal.Id">@animal.Name - @animal.Species (@animal.Breed)</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="veterinarianId" class="form-label">Weterynarz *</label>
+                    <select class="form-select" id="veterinarianId" name="veterinarianId" required>
+                        <option value="">Wybierz weterynarza</option>
+                        @if (ViewBag.Veterinarians != null)
+                        {
+                            @foreach (var vet in ViewBag.Veterinarians as List<Shelter.Models.Veterinarian>)
+                            {
+                                <option value="@vet.Id">@vet.FirstName @vet.LastName - @(vet.Specialization ?? "")</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="serviceId" class="form-label">Usługa *</label>
+                    <select class="form-select" id="serviceId" name="serviceId" required>
+                        <option value="">Wybierz usługę</option>
+                        @if (ViewBag.Services != null)
+                        {
+                            @foreach (var service in ViewBag.Services as List<Shelter.Models.VeterinaryService>)
+                            {
+                                <option value="@service.Id">@service.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="appointmentDate" class="form-label">Data i godzina wizyty *</label>
+                    <input type="datetime-local" class="form-control" id="appointmentDate" name="appointmentDate" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="notes" class="form-label">Uwagi</label>
+                    <textarea class="form-control" id="notes" name="notes" rows="5" maxlength="500"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Zapisz na wizytę (za darmo)</button>
+            <a href="@Url.Action("ShelterAppointments", "Veterinary")" class="btn btn-secondary">Anuluj</a>
+        </div>
+    </form>
+</div>

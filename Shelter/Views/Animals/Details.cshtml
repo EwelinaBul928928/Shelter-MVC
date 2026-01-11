@@ -1,0 +1,148 @@
+@model Shelter.Models.Animal
+@{
+    ViewData["Title"] = "Szczegóły zwierzęcia";
+}
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        @if (!string.IsNullOrEmpty(Model.PhotoUrl))
+        {
+            <img src="@Model.PhotoUrl" class="img-fluid rounded shadow" alt="@Model.Name" style="max-height: 500px; width: 100%; object-fit: cover;">
+        }
+        else
+        {
+            <div class="bg-secondary d-flex align-items-center justify-content-center rounded shadow" style="height: 500px;">
+                <span class="text-white fs-4">Brak zdjęcia</span>
+            </div>
+        }
+    </div>
+    <div class="col-md-6">
+        <h1 class="mb-4">@Model.Name</h1>
+        
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Informacje podstawowe</h5>
+                <hr>
+                <div class="row mb-2">
+                    <div class="col-5"><strong>Gatunek:</strong></div>
+                    <div class="col-7">@Model.Species</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-5"><strong>Rasa:</strong></div>
+                    <div class="col-7">@(Model.Breed ?? "Nieznana")</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-5"><strong>Wiek:</strong></div>
+                    <div class="col-7">
+                        @Model.Age 
+                        @if (Model.Age == 1)
+                        {
+                            <text>rok</text>
+                        }
+                        else if (Model.Age < 5)
+                        {
+                            <text>lata</text>
+                        }
+                        else
+                        {
+                            <text>lat</text>
+                        }
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-5"><strong>Płeć:</strong></div>
+                    <div class="col-7">@Model.Gender</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-5"><strong>Status:</strong></div>
+                    <div class="col-7">
+                        @if (Model.Status == "Available")
+                        {
+                            <span class="badge bg-success">Dostępne</span>
+                        }
+                        else if (Model.Status == "Adopted")
+                        {
+                            <span class="badge bg-primary">Zaadoptowane</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">@Model.Status</span>
+                        }
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-5"><strong>Data przyjęcia:</strong></div>
+                    <div class="col-7">@Model.AdmissionDate.ToString("dd.MM.yyyy")</div>
+                </div>
+            </div>
+        </div>
+        
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Opis</h5>
+                    <hr>
+                    <p class="card-text">@Model.Description</p>
+                </div>
+            </div>
+        }
+
+        @if (Model.Status == "Available" && Context.Session.GetInt32("UserId") != null)
+        {
+            <a href="@Url.Action("Apply", "Adoption", new { animalId = Model.Id })" class="btn btn-success btn-lg w-100">Złóż wniosek o adopcję</a>
+        }
+        else if (Model.Status == "Available")
+        {
+            <div class="alert alert-info">
+                <strong>Uwaga!</strong> Aby złożyć wniosek o adopcję, musisz się zalogować.
+                <a href="@Url.Action("Login", "Account")" class="alert-link">Zaloguj się</a> lub 
+                <a href="@Url.Action("Register", "Account")" class="alert-link">zarejestruj</a>.
+            </div>
+        }
+    </div>
+</div>
+
+@if (Model.VeterinaryVisits != null && Model.VeterinaryVisits.Any())
+{
+    <div class="mt-5">
+        <h3 class="mb-4">Historia wizyt weterynaryjnych</h3>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Data wizyty</th>
+                        <th>Opis</th>
+                        <th>Diagnoza</th>
+                        <th>Weterynarz</th>
+                        <th>Koszt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var visit in Model.VeterinaryVisits.OrderByDescending(v => v.VisitDate))
+                    {
+                        <tr>
+                            <td><strong>@visit.VisitDate.ToString("dd.MM.yyyy")</strong></td>
+                            <td>@(visit.Description ?? "-")</td>
+                            <td>@(visit.Diagnosis ?? "-")</td>
+                            <td>@(visit.Veterinarian != null ? $"{visit.Veterinarian.FirstName} {visit.Veterinarian.LastName}" : "-")</td>
+                            <td>
+                                <span class="text-muted">-</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="mt-5">
+        <div class="alert alert-secondary">
+            <strong>Brak historii wizyt weterynaryjnych</strong> dla tego zwierzęcia.
+        </div>
+    </div>
+}
+
+<a href="@Url.Action("Index", "Animals")" class="btn btn-secondary mt-3">Powrót do listy</a>

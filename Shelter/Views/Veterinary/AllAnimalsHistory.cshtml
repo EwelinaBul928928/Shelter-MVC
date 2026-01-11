@@ -1,0 +1,103 @@
+@model List<Shelter.Models.Animal>
+@{
+    ViewData["Title"] = "Historia wszystkich zwierząt";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-4">Historia wszystkich zwierząt</h1>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">
+            <p class="mb-0">Brak zwierząt z historią wizyt weterynaryjnych.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var animal in Model)
+        {
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">@animal.Name - @animal.Species</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            @if (!string.IsNullOrEmpty(animal.PhotoUrl))
+                            {
+                                <img src="@animal.PhotoUrl" class="img-fluid rounded" alt="@animal.Name" style="max-height: 200px;">
+                            }
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Rasa:</strong> @(animal.Breed ?? "Nieznana")</p>
+                            <p><strong>Wiek:</strong> @animal.Age lat</p>
+                            <p><strong>Płeć:</strong> @animal.Gender</p>
+                            <p><strong>Status:</strong> 
+                                @if (animal.Status == "Available")
+                                {
+                                    <span class="badge bg-success">Dostępne</span>
+                                }
+                                else if (animal.Status == "Adopted")
+                                {
+                                    <span class="badge bg-primary">Zaadoptowane</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@animal.Status</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+
+                    @if (animal.VeterinaryVisits != null && animal.VeterinaryVisits.Any())
+                    {
+                        <h5 class="mt-3 mb-3">Historia wizyt weterynaryjnych</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Data wizyty</th>
+                                        <th>Usługa</th>
+                                        <th>Weterynarz</th>
+                                        <th>Opis</th>
+                                        <th>Diagnoza</th>
+                                        <th>Koszt</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var visit in animal.VeterinaryVisits.OrderByDescending(v => v.VisitDate))
+                                    {
+                                        <tr>
+                                            <td>@visit.VisitDate.ToString("dd.MM.yyyy")</td>
+                                            <td>@(visit.Service?.Name ?? "-")</td>
+                                            <td>@(visit.Veterinarian != null ? $"{visit.Veterinarian.FirstName} {visit.Veterinarian.LastName}" : "-")</td>
+                                            <td>@(visit.Description ?? "-")</td>
+                                            <td>@(visit.Diagnosis ?? "-")</td>
+                                            <td>
+                                                @if (animal.Status == "Adopted")
+                                                {
+                                                    @if (visit.Cost.HasValue)
+                                                    {
+                                                        <span class="text-success fw-bold">@visit.Cost.Value.ToString("C")</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">-</span>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
