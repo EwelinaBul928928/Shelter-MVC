@@ -151,8 +151,8 @@ Webowa aplikacja do zarządzania schroniskiem dla zwierząt. Pozwala na:
 
 ### Diagram ERD
 
-![Diagram ERD](docs/DIAGRAM1.png)
-![Diagram ERD](docs/DIAGRAM2.png)
+![Diagram ERD](DIAGRAM1.png)
+![Diagram ERD](DIAGRAM2.png)
 
 ### Relacje
 
